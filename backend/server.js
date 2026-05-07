@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-//import connectDB from './config/db.js';
+import connectDB from './config/db.js';
 import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js';
 
 
 dotenv.config();
-//connectDB();
+connectDB();
 const app = express();
 
 app.use(cors({ origin: "*" }));
@@ -15,6 +16,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Backend is running with ES modules' );
 });
+app.use('/auth', authRoutes);
 
 
 

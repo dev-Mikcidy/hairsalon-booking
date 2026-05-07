@@ -14,10 +14,7 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('Backend is running with ES modules' );
-});
+
 app.use('/auth', authRoutes);
 app.use('/services', serviceRoutes);
 app.use('/bookings', bookingRoutes);

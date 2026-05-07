@@ -3,6 +3,8 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import serviceRoutes from './routes/serviceRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 
 
 dotenv.config();
@@ -17,6 +19,8 @@ app.get('/', (req, res) => {
   res.send('Backend is running with ES modules' );
 });
 app.use('/auth', authRoutes);
+app.use('/services', serviceRoutes);
+app.use('/bookings', bookingRoutes);
 
 
 

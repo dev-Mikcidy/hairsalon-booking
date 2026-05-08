@@ -1,14 +1,24 @@
-import sgMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
-export const sendBookingEmail = async (to, subject, message) => {
-  const email = {
-    to,
-    from: process.env.EMAIL_FROM,
-    subject,
-    text: message
-  };
-
-  await sgMail.send(email);
-};
+export async function sendBookingEmail(to, subject, html) {
+  try {
+    await transporter.sendMail({
+      from: `"Hair Salon" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html
+    });
+  } catch (err) {
+    console.error("Email sending failed:", err.message);
+  }
+}

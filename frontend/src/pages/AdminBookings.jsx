@@ -4,11 +4,10 @@ import api from "../Services/api.js";
 function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
   const [form, setForm] = useState({
-    customerName: "",
-    customerEmail: "",
-    customerPhone: "",
+    customerId: "",
     serviceId: "",
     date: "",
     time: ""
@@ -20,9 +19,11 @@ function AdminBookings() {
     try {
       const b = await api.get("/bookings");
       const s = await api.get("/services");
+      const c = await api.get("/customers");
 
       setBookings(b.data);
       setServices(s.data);
+      setCustomers(c.data);
     } catch (err) {
       console.error("Error loading data:", err);
     }
@@ -42,9 +43,7 @@ function AdminBookings() {
       await api.post("/bookings", form);
 
       setForm({
-        customerName: "",
-        customerEmail: "",
-        customerPhone: "",
+        customerId: "",
         serviceId: "",
         date: "",
         time: ""
@@ -100,33 +99,22 @@ function AdminBookings() {
         <h2>Create Booking</h2>
 
         <form onSubmit={handleCreate}>
-          <input
-            type="text"
-            name="customerName"
-            placeholder="Customer Name"
-            value={form.customerName}
+          {/* CUSTOMER DROPDOWN */}
+          <select
+            name="customerId"
+            value={form.customerId}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Customer</option>
+            {customers.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name} ({c.email})
+              </option>
+            ))}
+          </select>
 
-          <input
-            type="email"
-            name="customerEmail"
-            placeholder="Customer Email"
-            value={form.customerEmail}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="text"
-            name="customerPhone"
-            placeholder="Customer Phone"
-            value={form.customerPhone}
-            onChange={handleChange}
-            required
-          />
-
+          {/* SERVICE DROPDOWN */}
           <select
             name="serviceId"
             value={form.serviceId}
@@ -184,11 +172,10 @@ function AdminBookings() {
         <tbody>
           {bookings.map((b) => (
             <tr key={b._id}>
-              <td>{b.customerName}</td>
-              <td>{b.customerEmail}</td>
-              <td>{b.customerPhone}</td>
+              <td>{b.customerId?.name}</td>
+              <td>{b.customerId?.email}</td>
+              <td>{b.customerId?.phone}</td>
 
-              {/* FIXED: serviceId is an object after populate */}
               <td>{b.serviceId?.name || "Unknown"}</td>
 
               <td>{b.date}</td>
@@ -222,30 +209,21 @@ function AdminBookings() {
             <h2>Edit Booking</h2>
 
             <form onSubmit={handleUpdate}>
-              <input
-                type="text"
-                value={editing.customerName}
+              {/* CUSTOMER DROPDOWN */}
+              <select
+                value={editing.customerId?._id || editing.customerId}
                 onChange={(e) =>
-                  setEditing({ ...editing, customerName: e.target.value })
+                  setEditing({ ...editing, customerId: e.target.value })
                 }
-              />
+              >
+                {customers.map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name} ({c.email})
+                  </option>
+                ))}
+              </select>
 
-              <input
-                type="email"
-                value={editing.customerEmail}
-                onChange={(e) =>
-                  setEditing({ ...editing, customerEmail: e.target.value })
-                }
-              />
-
-              <input
-                type="text"
-                value={editing.customerPhone}
-                onChange={(e) =>
-                  setEditing({ ...editing, customerPhone: e.target.value })
-                }
-              />
-
+              {/* SERVICE DROPDOWN */}
               <select
                 value={editing.serviceId?._id || editing.serviceId}
                 onChange={(e) =>
@@ -288,3 +266,4 @@ function AdminBookings() {
 }
 
 export default AdminBookings;
+

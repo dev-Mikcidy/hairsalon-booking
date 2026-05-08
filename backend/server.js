@@ -7,6 +7,7 @@ import serviceRoutes from './routes/serviceRoutes.js';
 import bookingRoutes from "./routes/bookingRoutes.js";
 
 
+
 dotenv.config();
 connectDB();
 const app = express();
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/services', serviceRoutes);
 app.use('/bookings', bookingRoutes);
+app.use("/api/customers", customerRoutes);
+
 
 
 

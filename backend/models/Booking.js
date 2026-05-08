@@ -8,6 +8,12 @@ const bookingSchema = new mongoose.Schema({
   serviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Service", required: true },
   date: { type: String, required: true },
   time: { type: String, required: true },
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Customer",
+    required: true
+  },
+
 
   createdAt: { type: Date, default: Date.now }
 });

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
     "bootstrap": "^5.3.8"
   }
 }

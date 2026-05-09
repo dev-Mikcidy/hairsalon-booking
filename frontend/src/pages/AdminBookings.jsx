@@ -6,6 +6,10 @@ function AdminBookings() {
   const [services, setServices] = useState([]);
   const [customers, setCustomers] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+
   const [form, setForm] = useState({
     customerId: "",
     serviceId: "",
@@ -17,6 +21,9 @@ function AdminBookings() {
 
   const loadData = async () => {
     try {
+      setLoading(true);
+      setError("");
+
       const b = await api.get("/bookings");
       const s = await api.get("/services");
       const c = await api.get("/customers");
@@ -26,6 +33,9 @@ function AdminBookings() {
       setCustomers(c.data);
     } catch (err) {
       console.error("Error loading data:", err);
+      setError("Failed to load data. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,6 +85,20 @@ function AdminBookings() {
     }
   };
 
+  // ⭐ SEARCH / FILTER LOGIC
+  const filteredBookings = bookings.filter((b) => {
+    const term = search.toLowerCase();
+
+    return (
+      b.customerId?.name?.toLowerCase().includes(term) ||
+      b.customerId?.email?.toLowerCase().includes(term) ||
+      b.customerId?.phone?.toLowerCase().includes(term) ||
+      b.serviceId?.name?.toLowerCase().includes(term) ||
+      b.date?.toLowerCase().includes(term) ||
+      b.time?.toLowerCase().includes(term)
+    );
+  });
+
   return (
     <div style={{ padding: "20px" }}>
       {/* Admin Navigation */}
@@ -94,6 +118,29 @@ function AdminBookings() {
 
       <h1>Admin Bookings</h1>
 
+      {/* ⭐ SEARCH BAR */}
+      <input
+        type="text"
+        placeholder="Search bookings..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          padding: "8px",
+          width: "300px",
+          marginBottom: "20px",
+          border: "1px solid #ccc"
+        }}
+      />
+
+      {/* LOADING + ERROR UI */}
+      {loading && (
+        <p style={{ color: "blue", fontWeight: "bold" }}>Loading data...</p>
+      )}
+
+      {error && (
+        <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>
+      )}
+
       {/* Create Booking */}
       <div style={{ maxWidth: "400px", marginBottom: "30px" }}>
         <h2>Create Booking</h2>
@@ -105,6 +152,7 @@ function AdminBookings() {
             value={form.customerId}
             onChange={handleChange}
             required
+            disabled={loading}
           >
             <option value="">Select Customer</option>
             {customers.map((c) => (
@@ -120,6 +168,7 @@ function AdminBookings() {
             value={form.serviceId}
             onChange={handleChange}
             required
+            disabled={loading}
           >
             <option value="">Select Service</option>
             {services.map((s) => (
@@ -135,6 +184,7 @@ function AdminBookings() {
             value={form.date}
             onChange={handleChange}
             required
+            disabled={loading}
           />
 
           <input
@@ -143,52 +193,53 @@ function AdminBookings() {
             value={form.time}
             onChange={handleChange}
             required
+            disabled={loading}
           />
 
-          <button type="submit" style={{ marginTop: "10px" }}>
-            Create Booking
+          <button type="submit" style={{ marginTop: "10px" }} disabled={loading}>
+            {loading ? "Please wait..." : "Create Booking"}
           </button>
         </form>
       </div>
 
       {/* Bookings Table */}
-      <table
-        border="1"
-        cellPadding="10"
-        style={{ width: "100%", marginTop: "20px" }}
-      >
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {bookings.map((b) => (
-            <tr key={b._id}>
-              <td>{b.customerId?.name}</td>
-              <td>{b.customerId?.email}</td>
-              <td>{b.customerId?.phone}</td>
-
-              <td>{b.serviceId?.name || "Unknown"}</td>
-
-              <td>{b.date}</td>
-              <td>{b.time}</td>
-
-              <td>
-                <button onClick={() => setEditing(b)}>Edit</button>
-                <button onClick={() => deleteBooking(b._id)}>Delete</button>
-              </td>
+      {!loading && !error && (
+        <table
+          border="1"
+          cellPadding="10"
+          style={{ width: "100%", marginTop: "20px" }}
+        >
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Service</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {filteredBookings.map((b) => (
+              <tr key={b._id}>
+                <td>{b.customerId?.name}</td>
+                <td>{b.customerId?.email}</td>
+                <td>{b.customerId?.phone}</td>
+                <td>{b.serviceId?.name || "Unknown"}</td>
+                <td>{b.date}</td>
+                <td>{b.time}</td>
+
+                <td>
+                  <button onClick={() => setEditing(b)}>Edit</button>
+                  <button onClick={() => deleteBooking(b._id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {/* Edit Modal */}
       {editing && (
@@ -266,4 +317,3 @@ function AdminBookings() {
 }
 
 export default AdminBookings;
-

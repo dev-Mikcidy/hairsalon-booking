@@ -1,6 +1,6 @@
 import Booking from "../models/Booking.js";
 import Customer from "../models/Customer.js";
-import { 
+import {
   bookingConfirmedTemplate,
   bookingUpdatedTemplate,
   bookingCancelledTemplate
@@ -156,3 +156,18 @@ export const deleteBooking = async (req, res) => {
     res.status(500).json({ msg: "Error deleting booking" });
   }
 };
+export const getTodayBookings = async (req, res) => {
+  try {
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+    const bookings = await Booking.find({ date: today })
+      .populate("customerId")
+      .populate("serviceId");
+
+    res.json(bookings);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Error fetching today's bookings" });
+  }
+};
+

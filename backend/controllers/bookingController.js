@@ -8,10 +8,10 @@ import {
 
 import { sendBookingEmail } from "../utils/sendBookingEmail.js";
 
-// CREATE BOOKING
+
 export const createBooking = async (req, res) => {
   try {
-    // SANITIZE INPUT
+   
     const serviceId = String(req.body.serviceId).trim();
     const customerId = String(req.body.customerId).trim();
     const date = String(req.body.date).trim();
@@ -22,7 +22,6 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ msg: "Customer not found" });
     }
 
-    // Prevent double booking
     const exists = await Booking.findOne({
       serviceId,
       date,
@@ -43,7 +42,7 @@ export const createBooking = async (req, res) => {
       time
     });
 
-    // ⭐ SENDGRID EMAIL CONFIRMATION
+
     try {
       await sendBookingEmail(
         customer.email,
@@ -69,7 +68,7 @@ export const createBooking = async (req, res) => {
 
 
 
-// GET ALL BOOKINGS
+
 export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
@@ -83,7 +82,7 @@ export const getAllBookings = async (req, res) => {
   }
 };
 
-// UPDATE BOOKING
+
 export const updateBooking = async (req, res) => {
   try {
     const customer = await Customer.findById(req.body.customerId);
@@ -91,7 +90,7 @@ export const updateBooking = async (req, res) => {
       return res.status(400).json({ msg: "Customer not found" });
     }
 
-    // Prevent double booking (exclude current booking)
+
     const conflict = await Booking.findOne({
       _id: { $ne: req.params.id },
       serviceId: req.body.serviceId,
@@ -129,7 +128,7 @@ export const updateBooking = async (req, res) => {
 };
 
 
-// DELETE BOOKING
+
 export const deleteBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
@@ -140,7 +139,7 @@ export const deleteBooking = async (req, res) => {
       return res.status(404).json({ msg: "Booking not found" });
     }
 
-    // Send cancellation email
+
     try {
       await sendBookingEmail(
         booking.customerId.email,
@@ -178,4 +177,23 @@ export const getTodayBookings = async (req, res) => {
     res.status(500).json({ msg: "Error fetching today's bookings" });
   }
 };
+export const getBookingsByDate = async (req, res) => {
+  try {
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ msg: "Date query parameter is required" });
+    }
+
+    const bookings = await Booking.find({ date })
+      .populate("customerId")
+      .populate("serviceId");
+
+    res.json(bookings);
+  } catch (err) {
+    console.error("Error fetching bookings by date:", err);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+
 

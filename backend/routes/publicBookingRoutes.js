@@ -6,7 +6,7 @@ import { sendBookingEmail } from "../utils/sendBookingEmail.js";
 
 const router = express.Router();
 
-// GET services for public booking
+
 router.get("/services", async (req, res) => {
   try {
     const services = await Service.find().select("name price duration");
@@ -17,7 +17,6 @@ router.get("/services", async (req, res) => {
   }
 });
 
-// PUBLIC booking creation
 router.post("/bookings", async (req, res) => {
   try {
     const { name, phone, email, serviceId, date, time } = req.body;
@@ -26,20 +25,20 @@ router.post("/bookings", async (req, res) => {
       return res.status(400).json({ msg: "Please fill in all required fields" });
     }
 
-    // Check service exists
+  
     const service = await Service.findById(serviceId);
     if (!service) {
       return res.status(404).json({ msg: "Selected service not found" });
     }
 
-    // Create a customer record for public users
+
     const customer = await Customer.create({
       name,
       email: email || "no-email@guest.com",
       phone,
     });
 
-    // Create booking
+  
     const booking = await Booking.create({
       customerName: name,
       customerEmail: email || "no-email@guest.com",
@@ -50,7 +49,7 @@ router.post("/bookings", async (req, res) => {
       customerId: customer._id,
     });
 
-    // Send confirmation email
+   
     if (email) {
       await sendBookingEmail(
         email,

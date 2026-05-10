@@ -18,13 +18,13 @@ export default function Login() {
       navigate("/admin/services");
 
     } catch (err) {
-      // Backend says "Admin only"
+      
       if (err.response?.status === 403) {
         alert("Access denied — Admins only");
         return;
       }
 
-      // Backend says "Invalid credentials"
+      
       alert(err.response?.data?.msg || "Invalid email or password");
     }
   };

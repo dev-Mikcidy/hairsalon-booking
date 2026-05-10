@@ -5,19 +5,23 @@ import {
   updateBooking,
   deleteBooking
 } from "../controllers/bookingController.js";
+import { getBookingsByDate } from "../controllers/bookingController.js";
+
 
 const router = express.Router();
 
-// ADMIN — GET all bookings
+
 router.get("/", getAllBookings);
 
-// ADMIN — CREATE booking
+
 router.post("/", createBooking);
 
-// ADMIN — UPDATE booking
+
 router.put("/:id", updateBooking);
 
-// ADMIN — DELETE booking
+
 router.delete("/:id", deleteBooking);
+
+router.get("/by-date", getBookingsByDate);
 
 export default router;

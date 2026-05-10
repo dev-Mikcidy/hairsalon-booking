@@ -28,13 +28,13 @@ app.use(
 
 app.use(express.json());
 
-// ⭐ PUBLIC ROUTES (must be FIRST)
+
 app.use("/public", publicBookingRoutes);
 
-// ⭐ AUTH ROUTES
+
 app.use("/auth", authRoutes);
 
-// ⭐ ADMIN ROUTES (protected)
+
 app.use("/services", authMiddleware, adminMiddleware, serviceRoutes);
 app.use("/bookings", authMiddleware, adminMiddleware, bookingRoutes);
 app.use("/api/customers", authMiddleware, adminMiddleware, customerRoutes);

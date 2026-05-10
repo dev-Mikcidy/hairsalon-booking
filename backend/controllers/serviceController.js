@@ -1,6 +1,6 @@
 import Service from "../models/Service.js";
 
-// GET ALL SERVICES
+
 export const getAllServices = async (req, res) => {
   try {
     const services = await Service.find();
@@ -10,16 +10,16 @@ export const getAllServices = async (req, res) => {
   }
 };
 
-// CREATE SERVICE
+
 export const createService = async (req, res) => {
   try {
-    // SANITIZE INPUT
+    
     const name = String(req.body.name || "").trim();
     const description = String(req.body.description || "").trim();
     const price = Number(req.body.price);
     const duration = Number(req.body.duration);
 
-    // VALIDATION
+  
     if (!name) return res.status(400).json({ msg: "Service name is required" });
     if (isNaN(price) || price < 1)
       return res.status(400).json({ msg: "Price must be at least 1 DKK" });
@@ -39,16 +39,15 @@ export const createService = async (req, res) => {
   }
 };
 
-// UPDATE SERVICE
 export const updateService = async (req, res) => {
   try {
-    // SANITIZE INPUT
+   
     const name = String(req.body.name || "").trim();
     const description = String(req.body.description || "").trim();
     const price = Number(req.body.price);
     const duration = Number(req.body.duration);
 
-    // VALIDATION
+
     if (!name) return res.status(400).json({ msg: "Service name is required" });
     if (isNaN(price) || price < 1)
       return res.status(400).json({ msg: "Price must be at least 1 DKK" });
@@ -71,7 +70,6 @@ export const updateService = async (req, res) => {
   }
 };
 
-// DELETE SERVICE
 export const deleteService = async (req, res) => {
   try {
     const deleted = await Service.findByIdAndDelete(req.params.id);

@@ -1,6 +1,6 @@
 import Customer from "../models/Customer.js";
 
-// GET ALL CUSTOMERS
+
 export const getAllCustomers = async (req, res) => {
   try {
     const customers = await Customer.find().sort({ createdAt: -1 });
@@ -11,7 +11,7 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
-// CREATE CUSTOMER
+
 export const createCustomer = async (req, res) => {
   try {
     const { name, email, phone } = req.body;
@@ -29,7 +29,7 @@ export const createCustomer = async (req, res) => {
   }
 };
 
-// UPDATE CUSTOMER
+
 export const updateCustomer = async (req, res) => {
   try {
     const { name, email, phone } = req.body;
@@ -51,7 +51,7 @@ export const updateCustomer = async (req, res) => {
   }
 };
 
-// DELETE CUSTOMER
+
 export const deleteCustomer = async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id);

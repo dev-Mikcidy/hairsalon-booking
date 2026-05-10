@@ -11,44 +11,33 @@ import { sendBookingEmail } from "../utils/sendBookingEmail.js";
 // CREATE BOOKING
 export const createBooking = async (req, res) => {
   try {
-    const { customerId, serviceId, date, time } = req.body;
+    const customer = await Customer.findById(req.body.customerId);
+    if (!customer) {
+      return res.status(400).json({ msg: "Customer not found" });
+    }
 
     // Prevent double booking
-    const exists = await Booking.findOne({ serviceId, date, time });
+    const exists = await Booking.findOne({
+      serviceId: req.body.serviceId,
+      date: req.body.date,
+      time: req.body.time
+    });
+
     if (exists) {
       return res.status(400).json({ msg: "This time slot is already booked." });
     }
 
-    // Create booking
     const booking = await Booking.create({
-      customerId,
-      serviceId,
-      date,
-      time
+      customerId: customer._id,
+      customerName: customer.name,
+      customerEmail: customer.email,
+      customerPhone: customer.phone,
+      serviceId: req.body.serviceId,
+      date: req.body.date,
+      time: req.body.time
     });
 
-    // Populate customer + service
-    const populated = await booking
-      .populate("customerId")
-      .populate("serviceId");
-
-    // Send confirmation email
-    try {
-      await sendBookingEmail(
-        populated.customerId.email,
-        "Booking Confirmed",
-        bookingConfirmedTemplate({
-          customerName: populated.customerId.name,
-          date: populated.date,
-          time: populated.time,
-          serviceName: populated.serviceId.name
-        })
-      );
-    } catch (emailErr) {
-      console.error("Email failed:", emailErr.message);
-    }
-
-    res.json(populated);
+    res.json(booking);
   } catch (err) {
     console.error("Booking error:", err);
     res.status(500).json({ msg: "Error creating booking" });
@@ -72,14 +61,17 @@ export const getAllBookings = async (req, res) => {
 // UPDATE BOOKING
 export const updateBooking = async (req, res) => {
   try {
-    const { customerId, serviceId, date, time } = req.body;
+    const customer = await Customer.findById(req.body.customerId);
+    if (!customer) {
+      return res.status(400).json({ msg: "Customer not found" });
+    }
 
     // Prevent double booking (exclude current booking)
     const conflict = await Booking.findOne({
       _id: { $ne: req.params.id },
-      serviceId,
-      date,
-      time
+      serviceId: req.body.serviceId,
+      date: req.body.date,
+      time: req.body.time
     });
 
     if (conflict) {
@@ -88,30 +80,20 @@ export const updateBooking = async (req, res) => {
 
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
-      { customerId, serviceId, date, time },
+      {
+        customerId: customer._id,
+        customerName: customer.name,
+        customerEmail: customer.email,
+        customerPhone: customer.phone,
+        serviceId: req.body.serviceId,
+        date: req.body.date,
+        time: req.body.time
+      },
       { new: true }
-    )
-      .populate("customerId")
-      .populate("serviceId");
+    );
 
     if (!booking) {
       return res.status(404).json({ msg: "Booking not found" });
-    }
-
-    // Send update email
-    try {
-      await sendBookingEmail(
-        booking.customerId.email,
-        "Booking Updated",
-        bookingUpdatedTemplate({
-          customerName: booking.customerId.name,
-          date: booking.date,
-          time: booking.time,
-          serviceName: booking.serviceId.name
-        })
-      );
-    } catch (emailErr) {
-      console.error("Email failed:", emailErr.message);
     }
 
     res.json(booking);
@@ -120,6 +102,7 @@ export const updateBooking = async (req, res) => {
     res.status(500).json({ msg: "Error updating booking" });
   }
 };
+
 
 // DELETE BOOKING
 export const deleteBooking = async (req, res) => {

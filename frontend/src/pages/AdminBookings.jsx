@@ -26,7 +26,7 @@ function AdminBookings() {
 
       const b = await api.get("/bookings");
       const s = await api.get("/services");
-      const c = await api.get("/customers");
+      const c = await api.get("/api/customers");
 
       setBookings(b.data);
       setServices(s.data);
@@ -70,7 +70,7 @@ function AdminBookings() {
       await api.delete(`/bookings/${id}`);
       loadData();
     } catch (err) {
-      console.error("Error deleting booking:", err);
+      alert(err.response?.data?.msg || "Error deleting booking");
     }
   };
 
@@ -81,11 +81,10 @@ function AdminBookings() {
       setEditing(null);
       loadData();
     } catch (err) {
-      console.error("Error updating booking:", err);
+      alert(err.response?.data?.msg || "Error updating booking");
     }
   };
 
-  // ⭐ SEARCH / FILTER LOGIC
   const filteredBookings = bookings.filter((b) => {
     const term = search.toLowerCase();
 
@@ -100,59 +99,48 @@ function AdminBookings() {
   });
 
   return (
-    <div style={{ padding: "20px" }}>
-      {/* Admin Navigation */}
+    <div className="container mt-4">
+
+      {/* TOP NAVIGATION BAR */}
       <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          marginBottom: "20px",
-          background: "#eee",
-          padding: "10px"
-        }}
+        className="d-flex gap-3 mb-4 p-3 rounded"
+        style={{ background: "#222" }}
       >
-        <a href="/admin/services">Manage Services</a>
-        <a href="/admin/bookings">Manage Bookings</a>
-        <a href="/login">Logout</a>
+        <a href="/admin" className="text-white">Dashboard</a>
+        <a href="/admin/services" className="text-white">Services</a>
+        <a href="/admin/bookings" className="text-white">Bookings</a>
+        <a href="/admin/customers" className="text-white">Customers</a>
+        <a href="/login" className="text-white ms-auto">Logout</a>
       </div>
 
-      <h1>Admin Bookings</h1>
+      <h1 className="mb-4">Admin Bookings</h1>
 
-      {/* ⭐ SEARCH BAR */}
+      {/* SEARCH BAR */}
       <input
         type="text"
+        className="form-control mb-4"
         placeholder="Search bookings..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        style={{
-          padding: "8px",
-          width: "300px",
-          marginBottom: "20px",
-          border: "1px solid #ccc"
-        }}
+        style={{ maxWidth: "350px" }}
       />
 
-      {/* LOADING + ERROR UI */}
-      {loading && (
-        <p style={{ color: "blue", fontWeight: "bold" }}>Loading data...</p>
-      )}
+      {/* LOADING + ERROR */}
+      {loading && <div className="alert alert-info">Loading data...</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
-      {error && (
-        <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>
-      )}
+      {/* CREATE BOOKING CARD */}
+      <div className="card p-4 mb-4" style={{ maxWidth: "450px" }}>
+        <h4>Create Booking</h4>
 
-      {/* Create Booking */}
-      <div style={{ maxWidth: "400px", marginBottom: "30px" }}>
-        <h2>Create Booking</h2>
+        <form onSubmit={handleCreate} className="mt-3">
 
-        <form onSubmit={handleCreate}>
-          {/* CUSTOMER DROPDOWN */}
           <select
             name="customerId"
+            className="form-select mb-3"
             value={form.customerId}
             onChange={handleChange}
             required
-            disabled={loading}
           >
             <option value="">Select Customer</option>
             {customers.map((c) => (
@@ -162,13 +150,12 @@ function AdminBookings() {
             ))}
           </select>
 
-          {/* SERVICE DROPDOWN */}
           <select
             name="serviceId"
+            className="form-select mb-3"
             value={form.serviceId}
             onChange={handleChange}
             required
-            disabled={loading}
           >
             <option value="">Select Service</option>
             {services.map((s) => (
@@ -181,35 +168,31 @@ function AdminBookings() {
           <input
             type="date"
             name="date"
+            className="form-control mb-3"
             value={form.date}
             onChange={handleChange}
             required
-            disabled={loading}
           />
 
           <input
             type="time"
             name="time"
+            className="form-control mb-3"
             value={form.time}
             onChange={handleChange}
             required
-            disabled={loading}
           />
 
-          <button type="submit" style={{ marginTop: "10px" }} disabled={loading}>
+          <button className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Please wait..." : "Create Booking"}
           </button>
         </form>
       </div>
 
-      {/* Bookings Table */}
+      {/* BOOKINGS TABLE */}
       {!loading && !error && (
-        <table
-          border="1"
-          cellPadding="10"
-          style={{ width: "100%", marginTop: "20px" }}
-        >
-          <thead>
+        <table className="table table-striped table-bordered">
+          <thead className="table-dark">
             <tr>
               <th>Customer</th>
               <th>Email</th>
@@ -217,7 +200,7 @@ function AdminBookings() {
               <th>Service</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Action</th>
+              <th style={{ width: "150px" }}>Action</th>
             </tr>
           </thead>
 
@@ -232,8 +215,19 @@ function AdminBookings() {
                 <td>{b.time}</td>
 
                 <td>
-                  <button onClick={() => setEditing(b)}>Edit</button>
-                  <button onClick={() => deleteBooking(b._id)}>Delete</button>
+                  <button
+                    className="btn btn-sm btn-warning me-2"
+                    onClick={() => setEditing(b)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => deleteBooking(b._id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -241,77 +235,77 @@ function AdminBookings() {
         </table>
       )}
 
-      {/* Edit Modal */}
+      {/* EDIT MODAL */}
       {editing && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <div style={{ background: "white", padding: "20px", width: "400px" }}>
-            <h2>Edit Booking</h2>
+        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content p-3">
 
-            <form onSubmit={handleUpdate}>
-              {/* CUSTOMER DROPDOWN */}
-              <select
-                value={editing.customerId?._id || editing.customerId}
-                onChange={(e) =>
-                  setEditing({ ...editing, customerId: e.target.value })
-                }
-              >
-                {customers.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name} ({c.email})
-                  </option>
-                ))}
-              </select>
+              <h4>Edit Booking</h4>
 
-              {/* SERVICE DROPDOWN */}
-              <select
-                value={editing.serviceId?._id || editing.serviceId}
-                onChange={(e) =>
-                  setEditing({ ...editing, serviceId: e.target.value })
-                }
-              >
-                {services.map((s) => (
-                  <option key={s._id} value={s._id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+              <form onSubmit={handleUpdate} className="mt-3">
 
-              <input
-                type="date"
-                value={editing.date}
-                onChange={(e) =>
-                  setEditing({ ...editing, date: e.target.value })
-                }
-              />
+                <select
+                  className="form-select mb-3"
+                  value={editing.customerId?._id || editing.customerId}
+                  onChange={(e) =>
+                    setEditing({ ...editing, customerId: e.target.value })
+                  }
+                >
+                  {customers.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.name} ({c.email})
+                    </option>
+                  ))}
+                </select>
 
-              <input
-                type="time"
-                value={editing.time}
-                onChange={(e) =>
-                  setEditing({ ...editing, time: e.target.value })
-                }
-              />
+                <select
+                  className="form-select mb-3"
+                  value={editing.serviceId?._id || editing.serviceId}
+                  onChange={(e) =>
+                    setEditing({ ...editing, serviceId: e.target.value })
+                  }
+                >
+                  {services.map((s) => (
+                    <option key={s._id} value={s._id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
 
-              <button type="submit">Save</button>
-              <button type="button" onClick={() => setEditing(null)}>
-                Cancel
-              </button>
-            </form>
+                <input
+                  type="date"
+                  className="form-control mb-3"
+                  value={editing.date}
+                  onChange={(e) =>
+                    setEditing({ ...editing, date: e.target.value })
+                  }
+                />
+
+                <input
+                  type="time"
+                  className="form-control mb-3"
+                  value={editing.time}
+                  onChange={(e) =>
+                    setEditing({ ...editing, time: e.target.value })
+                  }
+                />
+
+                <button className="btn btn-primary w-100 mb-2">Save</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary w-100"
+                  onClick={() => setEditing(null)}
+                >
+                  Cancel
+                </button>
+              </form>
+
+            </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }

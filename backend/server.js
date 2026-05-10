@@ -9,6 +9,7 @@ import customerRoutes from "./routes/customerRoutes.js"
 
 
 
+
 dotenv.config();
 connectDB();
 const app = express();
@@ -21,6 +22,7 @@ app.use('/auth', authRoutes);
 app.use('/services', serviceRoutes);
 app.use('/bookings', bookingRoutes);
 app.use("/api/customers", customerRoutes);
+
 
 
 

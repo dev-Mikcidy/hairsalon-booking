@@ -4,13 +4,11 @@ import api from "../Services/api";
 export default function AdminServices() {
   const [services, setServices] = useState([]);
 
-  // Add form states
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [duration, setDuration] = useState("");
 
-  // Edit modal states
   const [editingService, setEditingService] = useState(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -22,7 +20,7 @@ export default function AdminServices() {
       const res = await api.get("/services");
       setServices(res.data);
     } catch (err) {
-      alert("Error loading services");
+      alert(err.response?.data?.msg || "Error loading services");
     }
   };
 
@@ -30,7 +28,6 @@ export default function AdminServices() {
     fetchServices();
   }, []);
 
-  // CREATE SERVICE
   const createService = async () => {
     if (!name.trim()) return alert("Service name is required");
     if (price <= 0) return alert("Price must be greater than 0");
@@ -55,7 +52,6 @@ export default function AdminServices() {
     }
   };
 
-  // DELETE SERVICE
   const deleteService = async (id) => {
     if (!window.confirm("Delete this service?")) return;
 
@@ -63,11 +59,10 @@ export default function AdminServices() {
       await api.delete(`/services/${id}`);
       fetchServices();
     } catch (err) {
-      alert("Error deleting service");
+      alert(err.response?.data?.msg || "Error deleting service");
     }
   };
 
-  // UPDATE SERVICE
   const updateService = async () => {
     if (!editName.trim()) return alert("Service name is required");
     if (editPrice <= 0) return alert("Price must be greater than 0");
@@ -88,29 +83,29 @@ export default function AdminServices() {
     }
   };
 
-
   return (
+    <div className="container mt-4">
 
-
-    <div className="container mt-5">
-      <h2 className="mb-4">Admin — Manage Services</h2>
-
-      <div>
-        <a href="/admin/bookings" className="btn btn-outline-primary me-2">
-          Go to Bookings
-        </a>
-
-        <a href="/admin" className="btn btn-secondary">
-          Back to Dashboard
-        </a>
+      {/* TOP NAVIGATION BAR */}
+      <div
+        className="d-flex gap-3 mb-4 p-3 rounded"
+        style={{ background: "#222" }}
+      >
+        <a href="/admin" className="text-white">Dashboard</a>
+        <a href="/admin/services" className="text-white">Services</a>
+        <a href="/admin/bookings" className="text-white">Bookings</a>
+        <a href="/admin/customers" className="text-white">Customers</a>
+        <a href="/login" className="text-white ms-auto">Logout</a>
       </div>
 
-      {/* Add Service Form */}
+      <h2 className="mb-4">Admin — Manage Services</h2>
+
+      {/* ADD SERVICE FORM */}
       <div className="card p-4 mb-4 shadow-sm">
         <h4>Add New Service</h4>
 
         <div className="row mt-3">
-          <div className="col-md-3">
+          <div className="col-md-3 mb-3">
             <input
               className="form-control"
               placeholder="Service Name"
@@ -119,7 +114,7 @@ export default function AdminServices() {
             />
           </div>
 
-          <div className="col-md-3">
+          <div className="col-md-3 mb-3">
             <input
               className="form-control"
               placeholder="Description (optional)"
@@ -128,7 +123,7 @@ export default function AdminServices() {
             />
           </div>
 
-          <div className="col-md-3">
+          <div className="col-md-3 mb-3">
             <input
               type="number"
               className="form-control"
@@ -138,7 +133,7 @@ export default function AdminServices() {
             />
           </div>
 
-          <div className="col-md-3">
+          <div className="col-md-3 mb-3">
             <input
               type="number"
               className="form-control"
@@ -149,23 +144,23 @@ export default function AdminServices() {
           </div>
         </div>
 
-        <button className="btn btn-primary mt-3" onClick={createService}>
+        <button className="btn btn-primary mt-2" onClick={createService}>
           Add Service
         </button>
       </div>
 
-      {/* Services Table */}
+      {/* SERVICES TABLE */}
       <div className="card p-4 shadow-sm">
         <h4>Existing Services</h4>
 
         <table className="table table-striped mt-3">
-          <thead>
+          <thead className="table-dark">
             <tr>
               <th>Name</th>
               <th>Description</th>
               <th>Duration</th>
               <th>Price</th>
-              <th></th>
+              <th style={{ width: "150px" }}>Action</th>
             </tr>
           </thead>
 
@@ -176,6 +171,7 @@ export default function AdminServices() {
                 <td>{s.description || "-"}</td>
                 <td>{s.duration} min</td>
                 <td>{s.price} DKK</td>
+
                 <td>
                   <button
                     className="btn btn-warning btn-sm me-2"
@@ -205,81 +201,56 @@ export default function AdminServices() {
 
       {/* EDIT MODAL */}
       {editingService && (
-        <>
-          {/* Background overlay */}
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              background: "rgba(0,0,0,0.5)",
-              zIndex: 999
-            }}
-          />
+        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content p-4">
 
-          {/* Modal */}
-          <div
-            className="modal fade show"
-            style={{
-              display: "block",
-              position: "fixed",
-              top: "20%",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 1000
-            }}
-          >
-            <div className="modal-dialog">
-              <div className="modal-content p-4">
+              <h4>Edit Service</h4>
 
-                <h4>Edit Service</h4>
+              <input
+                className="form-control mt-3"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
 
-                <input
-                  className="form-control mt-2"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                />
+              <input
+                className="form-control mt-3"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+              />
 
-                <input
-                  className="form-control mt-2"
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                />
+              <input
+                type="number"
+                className="form-control mt-3"
+                value={editPrice}
+                onChange={(e) => setEditPrice(e.target.value)}
+              />
 
-                <input
-                  type="number"
-                  className="form-control mt-2"
-                  value={editPrice}
-                  onChange={(e) => setEditPrice(e.target.value)}
-                />
+              <input
+                type="number"
+                className="form-control mt-3"
+                value={editDuration}
+                onChange={(e) => setEditDuration(e.target.value)}
+              />
 
-                <input
-                  type="number"
-                  className="form-control mt-2"
-                  value={editDuration}
-                  onChange={(e) => setEditDuration(e.target.value)}
-                />
+              <div className="mt-4 d-flex justify-content-end">
+                <button
+                  className="btn btn-secondary me-2"
+                  onClick={() => setEditingService(null)}
+                >
+                  Cancel
+                </button>
 
-                <div className="mt-3 d-flex justify-content-end">
-                  <button
-                    className="btn btn-secondary me-2"
-                    onClick={() => setEditingService(null)}
-                  >
-                    Cancel
-                  </button>
-
-                  <button className="btn btn-primary" onClick={updateService}>
-                    Save Changes
-                  </button>
-                </div>
-
+                <button className="btn btn-primary" onClick={updateService}>
+                  Save Changes
+                </button>
               </div>
+
             </div>
           </div>
-        </>
+        </div>
       )}
+
     </div>
   );
 }

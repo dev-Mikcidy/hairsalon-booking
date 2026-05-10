@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../Services/api";
+import api from "../services/api.js";
 
 export default function Services() {
   const [services, setServices] = useState([]);

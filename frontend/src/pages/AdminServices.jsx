@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../Services/api";
+import api from "../services/api.js";
 
 export default function AdminServices() {
   const [services, setServices] = useState([]);
@@ -111,6 +111,8 @@ export default function AdminServices() {
               placeholder="Service Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              minLength={2}
+              required
             />
           </div>
 
@@ -120,6 +122,7 @@ export default function AdminServices() {
               placeholder="Description (optional)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              maxLength={200}
             />
           </div>
 
@@ -128,8 +131,10 @@ export default function AdminServices() {
               type="number"
               className="form-control"
               placeholder="Price (DKK)"
+              min="1"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
+              required
             />
           </div>
 
@@ -138,8 +143,11 @@ export default function AdminServices() {
               type="number"
               className="form-control"
               placeholder="Duration (minutes)"
+              min="5"
+              max="300"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
+              required
             />
           </div>
         </div>
@@ -210,12 +218,15 @@ export default function AdminServices() {
               <input
                 className="form-control mt-3"
                 value={editName}
+                minLength={2}
                 onChange={(e) => setEditName(e.target.value)}
+                required
               />
 
               <input
                 className="form-control mt-3"
                 value={editDescription}
+                maxLength={200}
                 onChange={(e) => setEditDescription(e.target.value)}
               />
 
@@ -223,14 +234,19 @@ export default function AdminServices() {
                 type="number"
                 className="form-control mt-3"
                 value={editPrice}
+                min="1"
                 onChange={(e) => setEditPrice(e.target.value)}
+                required
               />
 
               <input
                 type="number"
                 className="form-control mt-3"
                 value={editDuration}
+                min="5"
+                max="300"
                 onChange={(e) => setEditDuration(e.target.value)}
+                required
               />
 
               <div className="mt-4 d-flex justify-content-end">

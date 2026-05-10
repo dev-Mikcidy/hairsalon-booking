@@ -6,6 +6,8 @@ import AdminCustomers from "./pages/AdminCustomers.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./ProtectedRoute";
 import Services from "./pages/Services.jsx";
+import PublicBooking from "./pages/PublicBooking";
+
 
 
 function App() {
@@ -50,6 +52,9 @@ function App() {
           }
         />
         <Route path="/services" element={<Services />} />
+
+        <Route path="/book" element={<PublicBooking />} />
+
 
 
         {/* MUST BE LAST */}

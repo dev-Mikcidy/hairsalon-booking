@@ -13,7 +13,26 @@ export const getAllServices = async (req, res) => {
 // CREATE SERVICE
 export const createService = async (req, res) => {
   try {
-    const service = await Service.create(req.body);
+    // SANITIZE INPUT
+    const name = String(req.body.name || "").trim();
+    const description = String(req.body.description || "").trim();
+    const price = Number(req.body.price);
+    const duration = Number(req.body.duration);
+
+    // VALIDATION
+    if (!name) return res.status(400).json({ msg: "Service name is required" });
+    if (isNaN(price) || price < 1)
+      return res.status(400).json({ msg: "Price must be at least 1 DKK" });
+    if (isNaN(duration) || duration < 5)
+      return res.status(400).json({ msg: "Duration must be at least 5 minutes" });
+
+    const service = await Service.create({
+      name,
+      description,
+      price,
+      duration
+    });
+
     res.json(service);
   } catch (err) {
     res.status(400).json({ msg: err.message });
@@ -23,10 +42,23 @@ export const createService = async (req, res) => {
 // UPDATE SERVICE
 export const updateService = async (req, res) => {
   try {
+    // SANITIZE INPUT
+    const name = String(req.body.name || "").trim();
+    const description = String(req.body.description || "").trim();
+    const price = Number(req.body.price);
+    const duration = Number(req.body.duration);
+
+    // VALIDATION
+    if (!name) return res.status(400).json({ msg: "Service name is required" });
+    if (isNaN(price) || price < 1)
+      return res.status(400).json({ msg: "Price must be at least 1 DKK" });
+    if (isNaN(duration) || duration < 5)
+      return res.status(400).json({ msg: "Duration must be at least 5 minutes" });
+
     const updated = await Service.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true, runValidators: true }
+      { name, description, price, duration },
+      { new: true }
     );
 
     if (!updated) {

@@ -11,16 +11,22 @@ import { sendBookingEmail } from "../utils/sendBookingEmail.js";
 // CREATE BOOKING
 export const createBooking = async (req, res) => {
   try {
-    const customer = await Customer.findById(req.body.customerId);
+    // SANITIZE INPUT
+    const serviceId = String(req.body.serviceId).trim();
+    const customerId = String(req.body.customerId).trim();
+    const date = String(req.body.date).trim();
+    const time = String(req.body.time).trim();
+
+    const customer = await Customer.findById(customerId);
     if (!customer) {
       return res.status(400).json({ msg: "Customer not found" });
     }
 
     // Prevent double booking
     const exists = await Booking.findOne({
-      serviceId: req.body.serviceId,
-      date: req.body.date,
-      time: req.body.time
+      serviceId,
+      date,
+      time
     });
 
     if (exists) {
@@ -32,17 +38,36 @@ export const createBooking = async (req, res) => {
       customerName: customer.name,
       customerEmail: customer.email,
       customerPhone: customer.phone,
-      serviceId: req.body.serviceId,
-      date: req.body.date,
-      time: req.body.time
+      serviceId,
+      date,
+      time
     });
 
+    // ⭐ SENDGRID EMAIL CONFIRMATION
+    try {
+      await sendBookingEmail(
+        customer.email,
+        "Booking Confirmed",
+        bookingConfirmedTemplate({
+          customerName: customer.name,
+          date,
+          time,
+          serviceName: booking.serviceId?.name || "Your Service"
+        })
+      );
+    } catch (emailErr) {
+      console.error("SendGrid email failed:", emailErr.message);
+    }
+
     res.json(booking);
+
   } catch (err) {
     console.error("Booking error:", err);
     res.status(500).json({ msg: "Error creating booking" });
   }
 };
+
+
 
 // GET ALL BOOKINGS
 export const getAllBookings = async (req, res) => {

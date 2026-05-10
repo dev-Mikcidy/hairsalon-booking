@@ -7,11 +7,17 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  const payload = JSON.parse(atob(token.split(".")[1]));
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
 
-  if (payload.role !== "admin") {
+    if (payload.role !== "admin") {
+      return <Navigate to="/login" replace />;
+    }
+
+    return children;
+
+  } catch (err) {
+    localStorage.removeItem("token");
     return <Navigate to="/login" replace />;
   }
-
-  return children; 
 }

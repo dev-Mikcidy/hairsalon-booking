@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "../Services/api";
+import api from "../services/api.js";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -11,20 +11,29 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login", { email, password });
 
+      // Save JWT token
       localStorage.setItem("token", res.data.token);
 
-      navigate("/admin");
+      // Redirect to admin dashboard or services
+      navigate("/admin/services");
+
     } catch (err) {
+      // Backend says "Admin only"
       if (err.response?.status === 403) {
         alert("Access denied — Admins only");
-      } else {
-        alert(err.response?.data?.msg || "Invalid email or password");
+        return;
       }
+
+      // Backend says "Invalid credentials"
+      alert(err.response?.data?.msg || "Invalid email or password");
     }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh" }}
+    >
       <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", width: "100%" }}>
         
         <h2 className="text-center mb-4">Admin Login</h2>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "../Services/api.js";
+import api from "../services/api.js";
 
 function AdminCustomers() {
   const [customers, setCustomers] = useState([]);

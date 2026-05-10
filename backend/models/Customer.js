@@ -7,11 +7,10 @@ const CustomerSchema = new mongoose.Schema({
     minlength: 2
   },
   email: {
-    type: String,
-    required: true,
-    match: /.+\@.+\..+/,
-    unique: true
-  },
+  type: String,
+  required: false
+},
+
   phone: {
     type: String,
     required: true,

@@ -14,17 +14,14 @@ export default function Login() {
       // Save JWT token
       localStorage.setItem("token", res.data.token);
 
-      // Redirect to admin dashboard or services
-      navigate("/admin/services");
-
+      // Redirect to admin dashboard
+      navigate("/admin");
     } catch (err) {
-      
       if (err.response?.status === 403) {
         alert("Access denied — Admins only");
         return;
       }
 
-      
       alert(err.response?.data?.msg || "Invalid email or password");
     }
   };
@@ -35,7 +32,6 @@ export default function Login() {
       style={{ minHeight: "100vh" }}
     >
       <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", width: "100%" }}>
-        
         <h2 className="text-center mb-4">Admin Login</h2>
 
         <input
@@ -57,7 +53,6 @@ export default function Login() {
         <button className="btn btn-primary w-100" onClick={handleLogin}>
           Login
         </button>
-
       </div>
     </div>
   );

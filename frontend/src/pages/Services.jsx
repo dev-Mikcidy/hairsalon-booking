@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api.js";
+import { Link } from "react-router-dom";
 
 export default function Services() {
   const [services, setServices] = useState([]);
@@ -7,7 +8,8 @@ export default function Services() {
 
   const fetchServices = async () => {
     try {
-      const res = await api.get("/services");
+      // Correct endpoint for public services
+      const res = await api.get("/public/services");
       setServices(res.data);
     } catch (err) {
       console.error("Error loading services:", err);
@@ -22,7 +24,6 @@ export default function Services() {
 
   return (
     <div className="container mt-5">
-
       <h1 className="mb-4 text-center">Our Services</h1>
 
       {loading && (
@@ -39,7 +40,6 @@ export default function Services() {
         {services.map((service) => (
           <div key={service._id} className="col-md-4 mb-4">
             <div className="card shadow-sm h-100">
-
               <div className="card-body">
                 <h4 className="card-title">{service.name}</h4>
 
@@ -55,14 +55,11 @@ export default function Services() {
                   <strong>Price:</strong> {service.price} DKK
                 </p>
 
-                <a
-                  href="/booking"
-                  className="btn btn-primary w-100 mt-3"
-                >
+                {/* Use Link instead of <a href> */}
+                <Link to="/book" className="btn btn-primary w-100 mt-3">
                   Book Now
-                </a>
+                </Link>
               </div>
-
             </div>
           </div>
         ))}

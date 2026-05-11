@@ -15,7 +15,6 @@ export default function ProtectedRoute({ children }) {
     }
 
     return children;
-
   } catch (err) {
     localStorage.removeItem("token");
     return <Navigate to="/login" replace />;

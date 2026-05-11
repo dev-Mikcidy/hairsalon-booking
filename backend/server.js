@@ -20,8 +20,9 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "http://localhost:5173",                     
-    "https://hairsalon-booking.vercel.app"     
+    "http://localhost:5173",                      
+    "https://hairsalon-booking-mu.vercel.app"
+   
   ],
   credentials: true
 }));

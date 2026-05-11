@@ -1,24 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import AdminServices from "./pages/AdminServices";
+import AdminBookings from "./pages/AdminBookings.jsx";
+import AdminCustomers from "./pages/AdminCustomers.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+import ProtectedRoute from "./ProtectedRoute";
+import Services from "./pages/Services.jsx";
+import PublicBooking from "./pages/PublicBooking";
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/services"
+          element={
+            <ProtectedRoute>
+              <AdminServices />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/bookings"
+          element={
+            <ProtectedRoute>
+              <AdminBookings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/customers"
+          element={
+            <ProtectedRoute>
+              <AdminCustomers />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/services" element={<Services />} />
+
+        <Route path="/book" element={<PublicBooking />} />
+
+
+
+        {/* MUST BE LAST */}
+        <Route path="*" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

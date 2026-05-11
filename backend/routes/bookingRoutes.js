@@ -1,16 +1,27 @@
-import express from 'express';
-import { authMiddleware } from '../middleware/authMiddleware.js';
-import { adminMiddleware } from '../middleware/adminMiddleware.js';
+import express from "express";
 import {
   createBooking,
-  getMyBookings,
-  getAllBookings
-} from '../controllers/bookingController.js';
+  getAllBookings,
+  updateBooking,
+  deleteBooking
+} from "../controllers/bookingController.js";
+import { getBookingsByDate } from "../controllers/bookingController.js";
+
 
 const router = express.Router();
 
-router.post('/', authMiddleware, createBooking);
-router.get('/my', authMiddleware, getMyBookings);
-router.get('/all', authMiddleware, adminMiddleware, getAllBookings);
+
+router.get("/", getAllBookings);
+
+
+router.post("/", createBooking);
+
+
+router.put("/:id", updateBooking);
+
+
+router.delete("/:id", deleteBooking);
+
+router.get("/by-date", getBookingsByDate);
 
 export default router;

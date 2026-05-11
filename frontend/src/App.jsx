@@ -10,16 +10,21 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 
 import Services from "./pages/Services.jsx";
 import PublicBooking from "./pages/PublicBooking.jsx";
+import PublicHome from "./pages/PublicHome.jsx"; // <-- create this simple page
 
 function App() {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
+
+     
+      <Route path="/" element={<PublicHome />} />
       <Route path="/services" element={<Services />} />
       <Route path="/book" element={<PublicBooking />} />
 
-      {/* Admin Routes */}
+  
+      <Route path="/admin/login" element={<Login />} />
+
+    
       <Route
         path="/admin"
         element={
@@ -55,9 +60,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-
-      {/* Catch-all */}
-      <Route path="*" element={<Login />} />
+      <Route path="*" element={<PublicHome />} />
     </Routes>
   );
 }

@@ -31,11 +31,7 @@ app.use(express.json());
 
 
 app.use("/public", publicBookingRoutes);
-
-
 app.use("/auth", authRoutes);
-
-
 app.use("/services", authMiddleware, adminMiddleware, serviceRoutes);
 app.use("/bookings", authMiddleware, adminMiddleware, bookingRoutes);
 app.use("/api/customers", authMiddleware, adminMiddleware, customerRoutes);

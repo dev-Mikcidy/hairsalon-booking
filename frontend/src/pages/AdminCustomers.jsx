@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api.js";
+import { Link } from "react-router-dom";
 
-function AdminCustomers() {
+export default function AdminCustomers() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -74,11 +75,11 @@ function AdminCustomers() {
         className="d-flex gap-3 mb-4 p-3 rounded"
         style={{ background: "#222" }}
       >
-        <a href="/admin" className="text-white">Dashboard</a>
-        <a href="/admin/services" className="text-white">Services</a>
-        <a href="/admin/bookings" className="text-white">Bookings</a>
-        <a href="/admin/customers" className="text-white">Customers</a>
-        <a href="/login" className="text-white ms-auto">Logout</a>
+        <Link to="/admin" className="text-white">Dashboard</Link>
+        <Link to="/admin/services" className="text-white">Services</Link>
+        <Link to="/admin/bookings" className="text-white">Bookings</Link>
+        <Link to="/admin/customers" className="text-white">Customers</Link>
+        <Link to="/login" className="text-white ms-auto">Logout</Link>
       </div>
 
       <h1 className="mb-4">Admin — Manage Customers</h1>
@@ -222,5 +223,3 @@ function AdminCustomers() {
     </div>
   );
 }
-
-export default AdminCustomers;

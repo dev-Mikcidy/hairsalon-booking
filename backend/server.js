@@ -18,15 +18,13 @@ connectDB();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000",
-    "https://your-frontend-domain.vercel.app"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:5173",                     
+    "https://hairsalon-booking.vercel.app"     
+  ],
+  credentials: true
+}));
 
 app.use(express.json());
 

@@ -12,6 +12,7 @@ export default function PublicBooking() {
     time: "",
     notes: "",
   });
+
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -51,10 +52,12 @@ export default function PublicBooking() {
       ...form,
       [e.target.name]: e.target.value,
     });
+
     setErrors({
       ...errors,
       [e.target.name]: "",
     });
+
     setSuccessMsg("");
     setErrorMsg("");
   };
@@ -68,8 +71,12 @@ export default function PublicBooking() {
     setErrorMsg("");
 
     try {
-      const res = await api.post("/public/bookings", form);
-      setSuccessMsg("Your booking has been submitted! We will contact you to confirm.");
+      await api.post("/public/bookings", form);
+
+      setSuccessMsg(
+        "Your booking has been submitted! We will contact you to confirm."
+      );
+
       setForm({
         name: "",
         phone: "",
@@ -106,6 +113,7 @@ export default function PublicBooking() {
       )}
 
       <form onSubmit={handleSubmit} noValidate>
+        {/* Name */}
         <div className="mb-3">
           <label className="form-label">Name *</label>
           <input
@@ -118,6 +126,7 @@ export default function PublicBooking() {
           {errors.name && <div className="invalid-feedback">{errors.name}</div>}
         </div>
 
+        {/* Phone */}
         <div className="mb-3">
           <label className="form-label">Phone *</label>
           <input
@@ -127,9 +136,12 @@ export default function PublicBooking() {
             value={form.phone}
             onChange={handleChange}
           />
-          {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
+          {errors.phone && (
+            <div className="invalid-feedback">{errors.phone}</div>
+          )}
         </div>
 
+        {/* Email */}
         <div className="mb-3">
           <label className="form-label">Email (optional)</label>
           <input
@@ -139,9 +151,12 @@ export default function PublicBooking() {
             value={form.email}
             onChange={handleChange}
           />
-          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+          {errors.email && (
+            <div className="invalid-feedback">{errors.email}</div>
+          )}
         </div>
 
+        {/* Service */}
         <div className="mb-3">
           <label className="form-label">Service *</label>
           <select
@@ -162,6 +177,7 @@ export default function PublicBooking() {
           )}
         </div>
 
+        {/* Date */}
         <div className="mb-3">
           <label className="form-label">Date *</label>
           <input
@@ -171,9 +187,12 @@ export default function PublicBooking() {
             value={form.date}
             onChange={handleChange}
           />
-          {errors.date && <div className="invalid-feedback">{errors.date}</div>}
+          {errors.date && (
+            <div className="invalid-feedback">{errors.date}</div>
+          )}
         </div>
 
+        {/* Time */}
         <div className="mb-3">
           <label className="form-label">Time *</label>
           <input
@@ -183,9 +202,12 @@ export default function PublicBooking() {
             value={form.time}
             onChange={handleChange}
           />
-          {errors.time && <div className="invalid-feedback">{errors.time}</div>}
+          {errors.time && (
+            <div className="invalid-feedback">{errors.time}</div>
+          )}
         </div>
 
+        {/* Notes */}
         <div className="mb-3">
           <label className="form-label">Notes (optional)</label>
           <textarea
@@ -197,6 +219,7 @@ export default function PublicBooking() {
           />
         </div>
 
+        {/* Submit */}
         <button
           type="submit"
           className="btn btn-primary w-100"

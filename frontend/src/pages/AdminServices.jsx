@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api.js";
+import { Link } from "react-router-dom";
 
 export default function AdminServices() {
   const [services, setServices] = useState([]);
@@ -38,7 +39,7 @@ export default function AdminServices() {
         name,
         description,
         price,
-        duration
+        duration,
       });
 
       setName("");
@@ -73,7 +74,7 @@ export default function AdminServices() {
         name: editName,
         description: editDescription,
         price: editPrice,
-        duration: editDuration
+        duration: editDuration,
       });
 
       setEditingService(null);
@@ -85,17 +86,13 @@ export default function AdminServices() {
 
   return (
     <div className="container mt-4">
-
       {/* TOP NAVIGATION BAR */}
-      <div
-        className="d-flex gap-3 mb-4 p-3 rounded"
-        style={{ background: "#222" }}
-      >
-        <a href="/admin" className="text-white">Dashboard</a>
-        <a href="/admin/services" className="text-white">Services</a>
-        <a href="/admin/bookings" className="text-white">Bookings</a>
-        <a href="/admin/customers" className="text-white">Customers</a>
-        <a href="/login" className="text-white ms-auto">Logout</a>
+      <div className="d-flex gap-3 mb-4 p-3 rounded" style={{ background: "#222" }}>
+        <Link to="/admin" className="text-white">Dashboard</Link>
+        <Link to="/admin/services" className="text-white">Services</Link>
+        <Link to="/admin/bookings" className="text-white">Bookings</Link>
+        <Link to="/admin/customers" className="text-white">Customers</Link>
+        <Link to="/login" className="text-white ms-auto">Logout</Link>
       </div>
 
       <h2 className="mb-4">Admin — Manage Services</h2>
@@ -212,7 +209,6 @@ export default function AdminServices() {
         <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
             <div className="modal-content p-4">
-
               <h4>Edit Service</h4>
 
               <input
@@ -261,12 +257,10 @@ export default function AdminServices() {
                   Save Changes
                 </button>
               </div>
-
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }

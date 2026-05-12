@@ -11,11 +11,11 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login", { email, password });
 
-      // Save JWT token
-      localStorage.setItem("token", res.data.token);
-
-      // Redirect to admin dashboard
+      
+      localStorage.setItem("token", res.data.token); 
       navigate("/admin");
+      window.location.reload();
+
     } catch (err) {
       if (err.response?.status === 403) {
         alert("Access denied — Admins only");

@@ -1,9 +1,9 @@
 import Booking from "../models/Booking.js";
+import Service from "../models/Service.js";
 import Customer from "../models/Customer.js";
 import {
   bookingConfirmedTemplate,
-  bookingUpdatedTemplate,
-  bookingCancelledTemplate
+  bookingUpdatedTemplate,bookingCancelledTemplate
 } from "../utils/emailTemplates.js";
 
 import { sendBookingEmail } from "../utils/sendBookingEmail.js";
@@ -11,7 +11,7 @@ import { sendBookingEmail } from "../utils/sendBookingEmail.js";
 
 export const createBooking = async (req, res) => {
   try {
-   
+
     const serviceId = String(req.body.serviceId).trim();
     const customerId = String(req.body.customerId).trim();
     const date = String(req.body.date).trim();
@@ -20,6 +20,10 @@ export const createBooking = async (req, res) => {
     const customer = await Customer.findById(customerId);
     if (!customer) {
       return res.status(400).json({ msg: "Customer not found" });
+    }
+    const service = await Service.findById(serviceId);
+    if (!service) {
+      return res.status(400).json({ msg: "Service not found" });
     }
 
     const exists = await Booking.findOne({
@@ -51,7 +55,7 @@ export const createBooking = async (req, res) => {
           customerName: customer.name,
           date,
           time,
-          serviceName: booking.serviceId?.name || "Your Service"
+          serviceName: service.name
         })
       );
     } catch (emailErr) {
@@ -89,6 +93,12 @@ export const updateBooking = async (req, res) => {
     if (!customer) {
       return res.status(400).json({ msg: "Customer not found" });
     }
+
+    const service = await Service.findById(req.body.serviceId);
+    if (!service) {
+      return res.status(400).json({ msg: "Service not found" });
+    }
+
 
 
     const conflict = await Booking.findOne({

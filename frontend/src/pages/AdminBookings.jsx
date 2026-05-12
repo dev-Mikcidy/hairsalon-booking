@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../services/api.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminBookings() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/admin/login");
+    }
+  }, [token, navigate]);
+
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -25,9 +34,9 @@ export default function AdminBookings() {
       setLoading(true);
       setError("");
 
-      const b = await api.get("/bookings");
-      const s = await api.get("/services");
-      const c = await api.get("/api/customers");
+      const b = await api.get("/admin/bookings");
+      const s = await api.get("/admin/services");
+      const c = await api.get("/admin/customers");
 
       setBookings(b.data);
       setServices(s.data);
@@ -51,7 +60,7 @@ export default function AdminBookings() {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/bookings", form);
+      await api.post("/admin/bookings", form);
 
       setForm({
         customerId: "",
@@ -68,7 +77,7 @@ export default function AdminBookings() {
 
   const deleteBooking = async (id) => {
     try {
-      await api.delete(`/bookings/${id}`);
+      await api.delete(`/admin/bookings/${id}`);
       loadData();
     } catch (err) {
       alert(err.response?.data?.msg || "Error deleting booking");
@@ -78,7 +87,7 @@ export default function AdminBookings() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/bookings/${editing._id}`, editing);
+      await api.put(`/admin/bookings/${editing._id}`, editing);
       setEditing(null);
       loadData();
     } catch (err) {

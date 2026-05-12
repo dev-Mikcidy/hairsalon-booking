@@ -11,8 +11,8 @@ import {
 const router = express.Router();
 
 router.get('/', getAllServices);
-router.post('/', authMiddleware, adminMiddleware, createService);
-router.put('/:id', authMiddleware, adminMiddleware, updateService);
-router.delete('/:id', authMiddleware, adminMiddleware, deleteService);
+router.post('/',  createService);
+router.put('/:id',  updateService);
+router.delete('/:id', deleteService);
 
 export default router;

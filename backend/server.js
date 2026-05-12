@@ -17,24 +17,26 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(express.json());
 
 app.use(cors({
   origin: [
-    "http://localhost:5173",                      
-    "https://hairsalon-booking-mu.vercel.app"
-   
+    "http://localhost:5173",
+    "https://hairsalon-booking-mu.vercel.app",
+    "https://hairsalon-booking-git-main-dev-mikcidys-projects.vercel.app",
+    "https://hairsalon-booking-frq7tm3w9-dev-mikcidys-projects.vercel.app"
+
   ],
   credentials: true
 }));
 
-app.use(express.json());
 
 
 app.use("/public", publicBookingRoutes);
 app.use("/auth", authRoutes);
-app.use("/services", authMiddleware, adminMiddleware, serviceRoutes);
-app.use("/bookings", authMiddleware, adminMiddleware, bookingRoutes);
-app.use("/api/customers", authMiddleware, adminMiddleware, customerRoutes);
+app.use("/admin/services", authMiddleware, adminMiddleware, serviceRoutes);
+app.use("/admin/bookings", authMiddleware, adminMiddleware, bookingRoutes);
+app.use("/admin/customers", authMiddleware, adminMiddleware, customerRoutes);
 
 const port = process.env.PORT || 5001;
 app.listen(port, () =>

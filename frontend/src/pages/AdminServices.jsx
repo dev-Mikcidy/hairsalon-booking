@@ -1,8 +1,21 @@
 import { useEffect, useState } from "react";
 import api from "../services/api.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+
+
+
 
 export default function AdminServices() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/admin/login");
+    }
+  }, [token, navigate]);
+
   const [services, setServices] = useState([]);
 
   const [name, setName] = useState("");
@@ -18,7 +31,7 @@ export default function AdminServices() {
 
   const fetchServices = async () => {
     try {
-      const res = await api.get("/services");
+      const res = await api.get("/admin/services");
       setServices(res.data);
     } catch (err) {
       alert(err.response?.data?.msg || "Error loading services");
@@ -35,7 +48,7 @@ export default function AdminServices() {
     if (duration < 5) return alert("Duration must be at least 5 minutes");
 
     try {
-      await api.post("/services", {
+      await api.post("/admin/services", {
         name,
         description,
         price,
@@ -57,7 +70,7 @@ export default function AdminServices() {
     if (!window.confirm("Delete this service?")) return;
 
     try {
-      await api.delete(`/services/${id}`);
+      await api.delete(`/admin/services/${id}`);
       fetchServices();
     } catch (err) {
       alert(err.response?.data?.msg || "Error deleting service");
@@ -70,7 +83,7 @@ export default function AdminServices() {
     if (editDuration < 5) return alert("Duration must be at least 5 minutes");
 
     try {
-      await api.put(`/services/${editingService._id}`, {
+      await api.put(`/admin/services/${editingService._id}`, {
         name: editName,
         description: editDescription,
         price: editPrice,

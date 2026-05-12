@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../services/api.js";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 export default function AdminCustomers() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/admin/login");
+    }
+  }, [token, navigate]);
+  
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,7 +27,7 @@ export default function AdminCustomers() {
   const loadCustomers = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/api/customers");
+      const res = await api.get("/admin/customers");
       setCustomers(res.data);
     } catch (err) {
       console.error(err);
@@ -39,7 +48,7 @@ export default function AdminCustomers() {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/api/customers", form);
+      await api.post("/admin/customers", form);
       setForm({ name: "", email: "", phone: "" });
       loadCustomers();
     } catch (err) {
@@ -50,7 +59,7 @@ export default function AdminCustomers() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/api/customers/${editing._id}`, editing);
+      await api.put(`/admin/customers/${editing._id}`, editing);
       setEditing(null);
       loadCustomers();
     } catch (err) {
@@ -60,7 +69,7 @@ export default function AdminCustomers() {
 
   const deleteCustomer = async (id) => {
     try {
-      await api.delete(`/api/customers/${id}`);
+      await api.delete(`/admin/customers/${id}`);
       loadCustomers();
     } catch (err) {
       alert(err.response?.data?.msg || "Error deleting customer");

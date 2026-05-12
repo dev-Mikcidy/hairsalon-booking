@@ -105,7 +105,15 @@ export default function AdminServices() {
         <Link to="/admin/services" className="text-white">Services</Link>
         <Link to="/admin/bookings" className="text-white">Bookings</Link>
         <Link to="/admin/customers" className="text-white">Customers</Link>
-        <Link to="/login" className="text-white ms-auto">Logout</Link>
+        <button
+          className="text-white ms-auto btn btn-link"
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.href = "/admin/login";
+          }}
+        >
+          Logout
+        </button>
       </div>
 
       <h2 className="mb-4">Admin — Manage Services</h2>

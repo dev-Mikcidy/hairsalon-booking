@@ -6,6 +6,7 @@ export default function AdminCustomers() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  // Redirect if no token
   useEffect(() => {
     if (!token) {
       navigate("/admin/login");
@@ -37,8 +38,15 @@ export default function AdminCustomers() {
     }
   };
 
+  //  REAL-TIME POLLING 
   useEffect(() => {
-    loadCustomers();
+    loadCustomers(); 
+
+    const interval = setInterval(() => {
+      loadCustomers(); 
+    }, 5000);
+
+    return () => clearInterval(interval); // cleanup on unmount
   }, []);
 
   const handleChange = (e) => {
@@ -88,6 +96,7 @@ export default function AdminCustomers() {
         <Link to="/admin/services" className="text-white">Services</Link>
         <Link to="/admin/bookings" className="text-white">Bookings</Link>
         <Link to="/admin/customers" className="text-white">Customers</Link>
+
         <button
           className="text-white ms-auto btn btn-link"
           onClick={() => {

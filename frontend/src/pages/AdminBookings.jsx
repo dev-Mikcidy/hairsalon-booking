@@ -6,6 +6,7 @@ export default function AdminBookings() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  // Redirect if no token
   useEffect(() => {
     if (!token) {
       navigate("/admin/login");
@@ -49,8 +50,15 @@ export default function AdminBookings() {
     }
   };
 
+  //  REAL-TIME POLLING
   useEffect(() => {
-    loadData();
+    loadData(); // initial load
+
+    const interval = setInterval(() => {
+      loadData(); 
+    }, 5000);
+
+    return () => clearInterval(interval); // cleanup on unmount
   }, []);
 
   const handleChange = (e) => {
@@ -120,6 +128,7 @@ export default function AdminBookings() {
         <Link to="/admin/services" className="text-white">Services</Link>
         <Link to="/admin/bookings" className="text-white">Bookings</Link>
         <Link to="/admin/customers" className="text-white">Customers</Link>
+
         <button
           className="text-white ms-auto btn btn-link"
           onClick={() => {
@@ -129,8 +138,6 @@ export default function AdminBookings() {
         >
           Logout
         </button>
-
-
       </div>
 
       <h1 className="mb-4">Admin Bookings</h1>

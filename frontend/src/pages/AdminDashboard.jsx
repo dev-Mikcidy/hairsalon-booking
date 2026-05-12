@@ -1,6 +1,24 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  
+  useEffect(() => {
+    if (!token) {
+      navigate("/admin/login");
+    }
+  }, [token, navigate]);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="container mt-4">
 
@@ -13,6 +31,7 @@ export default function AdminDashboard() {
         <Link to="/admin/services" className="text-white">Services</Link>
         <Link to="/admin/bookings" className="text-white">Bookings</Link>
         <Link to="/admin/customers" className="text-white">Customers</Link>
+
         <button
           className="text-white ms-auto btn btn-link"
           onClick={() => {

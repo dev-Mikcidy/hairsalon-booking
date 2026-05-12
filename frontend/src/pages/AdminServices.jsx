@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import api from "../services/api.js";
 import { Link, useNavigate } from "react-router-dom";
 
-
-
-
-
 export default function AdminServices() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  // Redirect if no token
   useEffect(() => {
     if (!token) {
       navigate("/admin/login");
@@ -38,8 +35,15 @@ export default function AdminServices() {
     }
   };
 
+  // REAL-TIME POLLING 
   useEffect(() => {
-    fetchServices();
+    fetchServices(); 
+
+    const interval = setInterval(() => {
+      fetchServices(); 
+    }, 5000);
+
+    return () => clearInterval(interval); // cleanup on unmount
   }, []);
 
   const createService = async () => {

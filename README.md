@@ -1,220 +1,292 @@
-# 💇 Hair Salon Booking System — Full-Stack Application
+# 💇 Hair Salon Booking System
 
-## 📌 Overview
-This project is a full-stack booking system designed for a hair salon. It includes a public interface for customers and a secure admin dashboard for managing services, customers, and bookings.
+A full-stack salon booking application built with React, Node.js, Express, and MongoDB.
 
-The system is built using a **modular monolithic architecture**, making it clean, scalable, and easy to maintain.
-
-### The application supports:
-- Customer bookings  
-- Admin authentication  
-- CRUD operations for services, customers, and bookings  
-- Email notifications  
-- Real-time validation (e.g., preventing double-booking)  
-- Deployment on modern cloud platforms  
+The application allows customers to book appointments while giving administrators a secure dashboard to manage services, customers, and bookings.
 
 ---
 
-## 🛠️ Technologies Used
+# 🚀 Features
 
-### Frontend
-- React  
-- React Router  
-- Axios  
-- Bootstrap  
+## Public Features
+- View available salon services
+- Create bookings online
+- Prevent double bookings
+- Responsive user interface
 
-👉 Learn more: https://react.dev/
+## Admin Features
+- Secure admin authentication using JWT
+- Manage services
+- Manage customers
+- Manage bookings
+- Edit and delete records
+- View bookings by date
+- View today’s bookings
+- Automatic logout handling
 
----
+## Real-Time Updates
+The admin dashboard uses polling with `setInterval()` to automatically refresh customer and booking data every 5 seconds without reloading the page.
 
-### Backend
-- Node.js  
-- Express  
-- MongoDB + Mongoose  
-- JWT Authentication  
-- SendGrid Email API  
-
-👉 Learn more: https://jwt.io/introduction
-
----
-
-### Deployment
-- Frontend: Vercel  
-- Backend: Render  
-- Environment variables for secure configuration  
-
----
-
-## ✨ Key Features
-
-## 1. 🔐 Admin Authentication
-- Secure login using JWT  
-- Token stored in `localStorage`  
-- Protected admin routes  
-- Auto redirect to `/admin/login` if token is missing  
-
-👉 Learn more: https://reactrouter.com/en/main/start/overview
+## Email Notifications
+Automatic email notifications are sent when:
+- A booking is confirmed
+- A booking is updated
+- A booking is cancelled
 
 ---
 
-## 2. 🧭 Admin Dashboard
-Admins can manage:
-- Services  
-- Customers  
-- Bookings  
+# 🛠️ Technologies Used
 
-Each admin page includes:
-- Navigation bar  
-- Logout button  
-- CRUD forms  
-- Search and filtering  
-- Validation and error handling  
+## Frontend
+- React
+- React Router
+- Axios
+- Bootstrap
 
----
+## Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- bcrypt
+- Nodemailer
+- SendGrid
 
-## 3. ✂️ Service Management
-Admins can:
-- Create services  
-- Edit services  
-- Delete services  
-- View all services  
-
-### Validation rules:
-- Name is required  
-- Price must be ≥ 1 DKK  
-- Duration must be ≥ 5 minutes  
+## Deployment
+- Frontend deployed on Vercel
+- Backend deployed on Render
 
 ---
 
-## 4. 👤 Customer Management
-Admins can:
-- Add customers  
-- Edit customer details  
-- Delete customers  
-- View all customers  
+# 🏗️ Project Architecture
 
----
-
-## 5. 📅 Booking Management
-Admins can:
-- Create bookings  
-- Edit bookings  
-- Delete bookings  
-- Filter bookings  
-- View today’s bookings  
-- View bookings by date  
-
-### 🚫 Double-booking prevention
-Before creating or updating a booking, the backend checks:
-- serviceId  
-- date  
-- time  
-
-If a booking already exists, the request is rejected.
-
----
-
-## 6. 📧 Email Notifications
-The system sends emails for:
-- Booking confirmation  
-- Booking updates  
-- Booking cancellation  
-
-Emails include:
-- Customer name  
-- Service name  
-- Date  
-- Time  
-
----
-
-## 7. 🗂️ Data Population
-The backend uses `Mongoose populate()` to replace ObjectIds with full documents.
-
-Used in:
-- getAllBookings  
-- getTodayBookings  
-- getBookingsByDate  
-- deleteBooking  
-
-This allows the admin dashboard to display:
-- Customer name  
-- Email  
-- Phone  
-- Service name  
-
----
-
-## 8. ⚛️ Frontend React Logic
-
-### useState
-Stores component data  
-Example: bookings, services, forms  
-
-### useEffect
-Runs side effects  
-Example: loading data on page load  
-
-### onChange
-Updates state when user types or selects values  
-
----
-
-## 📡 API Overview
-
-### 🔐 Admin Routes
-
-- POST `/admin/login` — authenticate admin  
-- GET `/admin/services` — list services  
-- POST `/admin/services` — create service  
-- PUT `/admin/services/:id` — update service  
-- DELETE `/admin/services/:id` — delete service  
-
-- GET `/admin/customers` — list customers  
-- POST `/admin/customers` — create customer  
-- PUT `/admin/customers/:id` — update customer  
-- DELETE `/admin/customers/:id` — delete customer  
-
-- GET `/admin/bookings` — list bookings  
-- POST `/admin/bookings` — create booking  
-- PUT `/admin/bookings/:id` — update booking  
-- DELETE `/admin/bookings/:id` — delete booking  
-
-- GET `/admin/bookings/today` — today’s bookings  
-- GET `/admin/bookings/by-date?date=YYYY-MM-DD` — bookings by date  
-
----
-
-## 📆 Today’s Bookings Logic
-To fetch today’s bookings, the backend generates today’s date in the same format stored in MongoDB:
+This project follows a modular monolithic architecture with separate frontend and backend folders.
 
 ```text
-I generate today’s date in YYYY-MM-DD format using
-new Date().toISOString().split('T')[0],
-then query MongoDB for bookings where the date matches.
+project-root/
+│
+├── frontend/
+│   ├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+│
+├── backend/
+│   ├── routes/
+│   ├── middleware/
+│   ├── models/
+│   ├── controllers/
+│   ├── config/
+│   └── templates/
+│
+└── package.json
+```
 
 ---
 
-## 🚪 Logout Logic
+# 🔐 Authentication & Authorization
 
-The logout button:
+The system uses JWT authentication for admin access.
 
-- Removes JWT token
-- Redirects to /admin/login
-- Forces re-login for security
+Features include:
+- Protected admin routes
+- JWT token validation
+- Admin middleware authorization
+- Token storage in localStorage
+- Automatic redirect to `/admin/login` if unauthenticated
+
+Axios interceptors automatically attach the JWT token to authenticated requests.
 
 ---
 
-## 🎯 Conclusion
+# 📡 API Overview
 
-### This project demonstrates a complete full-stack application with:
+## Authentication
+- `POST /auth/login`
 
-- Authentication
-- Admin dashboard
+## Services
+- `GET /admin/services`
+- `POST /admin/services`
+- `PUT /admin/services/:id`
+- `DELETE /admin/services/:id`
+
+## Customers
+- `GET /admin/customers`
+- `POST /admin/customers`
+- `PUT /admin/customers/:id`
+- `DELETE /admin/customers/:id`
+
+## Bookings
+- `GET /admin/bookings`
+- `POST /admin/bookings`
+- `PUT /admin/bookings/:id`
+- `DELETE /admin/bookings/:id`
+- `GET /admin/bookings/today`
+- `GET /admin/bookings/by-date`
+
+---
+
+# 📧 Email System
+
+The application uses SendGrid and Nodemailer to send HTML email notifications.
+
+Emails include:
+- Customer name
+- Service name
+- Booking date
+- Booking time
+
+Notification types:
+- Booking confirmation
+- Booking update
+- Booking cancellation
+
+---
+
+# 🚫 Double Booking Prevention
+
+Before creating or updating a booking, the backend validates:
+- Service
+- Date
+- Time
+
+If another booking already exists for the same slot, the request is rejected.
+
+---
+
+# ⚙️ Environment Variables
+
+## Backend `.env`
+
+```env
+PORT=5001
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_jwt_secret
+SENDGRID_API_KEY=your_sendgrid_key
+EMAIL_FROM=your_email
+```
+
+## Frontend `.env`
+
+```env
+VITE_API_URL=http://localhost:5001
+```
+
+---
+
+# ▶️ Installation & Setup
+
+## 1. Clone the Repository
+
+```bash
+git clone <your-repository-url>
+cd <project-folder>
+```
+
+---
+
+## 2. Install Dependencies
+
+### Install root dependencies
+```bash
+npm install
+```
+
+### Install backend dependencies
+```bash
+cd backend
+npm install
+```
+
+### Install frontend dependencies
+```bash
+cd ../frontend
+npm install
+```
+
+---
+
+# ▶️ Running the Application
+
+## Run Frontend and Backend Together
+
+From the project root:
+
+```bash
+npm run dev
+```
+
+This uses `concurrently` to run both servers at the same time.
+
+---
+
+## Run Backend Only
+
+```bash
+cd backend
+npm run dev
+```
+
+Backend runs on:
+```text
+http://localhost:5001
+```
+
+---
+
+## Run Frontend Only
+
+```bash
+cd frontend
+npm run dev
+```
+
+Frontend usually runs on:
+```text
+http://localhost:5173
+```
+
+---
+
+# 🌐 Deployment
+
+## Frontend
+Deployed with Vercel.
+
+## Backend
+Deployed with Render.
+
+CORS is configured to allow deployed frontend domains.
+
+---
+
+# 📚 Important Concepts Used
+
+- React Hooks (`useState`, `useEffect`)
+- Axios interceptors
+- REST APIs
+- JWT Authentication
+- Middleware authorization
+- MongoDB population with `populate()`
+- Real-time polling
+- Environment variable management
 - CRUD operations
-- Email notifications
-- Real-time validation
-- Clean architecture
-- Cloud deployment
 
-- It is designed as a modern, scalable booking system ready for production use
+---
+
+# 🎯 Future Improvements
+
+Possible future improvements:
+- Real WebSocket implementation
+- Calendar integration
+- SMS notifications
+- Customer accounts
+- Payment integration
+- Booking analytics dashboard
+
+---
+
+# 👨‍💻 Author
+
+Developed by Michael Agunbiade.
